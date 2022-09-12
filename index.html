@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <script src="https://kit.fontawesome.com/42503283e7.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/index.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <title>DesignInDonk</title>
+</head>
+
+<body class="bg-slate-200">
+  <div id="app"></div>
+
+  <button type="button"
+    class="inline-block p-3  group bg-slate-900 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-slate-200 hover:shadow-lg focus:bg-slate-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-slate-800 active:shadow-lg transition duration-150 ease-in-out hidden bottom-5 right-5 fixed"
+    id="btn-back-to-top"><i class="group-hover:text-slate-900 fa-solid fa-arrow-up fa-2xl text-slate-200"></i></button>
+  <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
+
+  <script>
+    let backtoTop = document.getElementById('btn-back-to-top');
+    window.onscroll = function () {
+      scrollFunction();
+    };
+    function scrollFunction() {
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        backtoTop.style.display = 'block';
+      } else {
+        backtoTop.style.display = 'none';
+      }
+    }
+    function backToTop() {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+    backtoTop.addEventListener('click', backToTop);
+
+  </script>
+  <script type="module" src="/src/main.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/index.min.js"></script>
+
+</body>
+
+</html>
