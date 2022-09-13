@@ -1,39 +1,23 @@
 <template>
   <NavBar />
-  <div class="grid flex mt-10 md:mx-28 grid-cols-12">
-    <ListPerson />
-    <div class="inline border col-span-10">
+  <div class="grid flex mt-10 md:mx-8 grid-cols-12">
+    <ListPerson :allChatUser="allChatUser" />
+
+    <div class="inline border col-span-9">
+      <div class="h-12 bg-slate-900 flex">
+        <p class="flex my-auto text-slate-200 font-bold ml-4">
+          {{ getname }}
+        </p>
+      </div>
       <div
         class="col-row-10 overflow-y-auto bg-slate-100 p-3"
-        style="height: 41rem"
+        style="height: 38rem"
       >
-        <div>
-          <div></div>
-          <div class="flex border grid grid-cols-12">
-            <img
-              class="mx-auto"
-              width="40"
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/2048px-Circle-icons-profile.svg.png"
-            />
-            <div class="my-auto border col-span-10">
-              <p class="mx-4">sdasasdasd asdasd asdasd as das d as das ddasd</p>
-            </div>
-            <p class="flex justify-center my-auto">10.00</p>
-          </div>
-          <div class="flex border grid grid-cols-12 my-2">
-            <p class="flex justify-center my-auto">10.00</p>
-            <div class="my-auto border col-span-10">
-              <p class="flex justify-end">
-                sdasasdasd asdasd asdasd as das d as das ddasd
-              </p>
-            </div>
-            <p
-              class="mx-auto my-auto bg-slate-800 text-slate-100 px-2 py-1 rounded-full"
-            >
-              Anda
-            </p>
-          </div>
-        </div>
+        <ChatBox
+          v-for="(messages, i) in selectedUserChat.messages"
+          :key="i"
+          :messages="messages"
+        />
       </div>
       <div class="bg-slate-100-0 p-1">
         <FieldMessage />
@@ -45,7 +29,26 @@
 import NavBar from "../components/NavBar.vue";
 import ListPerson from "../components/ListPerson.vue";
 import FieldMessage from "../components/FieldMessage.vue";
+import { mapActions, mapState } from "pinia";
+import { useChating } from "../stores/chating";
+import ChatBox from "../components/ChatBox.vue";
 export default {
-  components: { NavBar, ListPerson, FieldMessage },
+  components: { NavBar, ListPerson, FieldMessage, ChatBox },
+  methods: {
+    ...mapActions(useChating, ["getAllUserChat"]),
+  },
+  computed: {
+    ...mapState(useChating, ["allChatUser", "selectedUserChat"]),
+    getname() {
+      if (!this.selectedUserChat) {
+        return "";
+      } else {
+        return this.selectedUserChat.member[0].fullName;
+      }
+    },
+  },
+  created() {
+    this.getAllUserChat();
+  },
 };
 </script>

@@ -14,14 +14,15 @@
       <input id="dropzone-file" type="file" class="hidden" />
     </label>
 
-    <input class="hidden" type="file" id="input-img" />
     <textarea
+      v-model="pesan"
       id="chat"
       rows="1"
       class="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       placeholder="Your message..."
     ></textarea>
     <button
+      @click.prevent="handleSendMessage"
       type="submit"
       class="inline-flex justify-center p-2 rounded-full cursor-pointer hover:bg-slate-100 group"
     >
@@ -31,3 +32,80 @@
     </button>
   </div>
 </template>
+
+<script>
+import { mapActions, mapState, mapWritableState } from "pinia";
+import { useChating } from "../stores/chating";
+import { io } from "socket.io-client";
+const socket = io("http://localhost:3000", {
+  transports: ["websocket"],
+});
+// socket.on("connect", () => {
+//   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+// });
+// socket.on("message", (param) => {
+//   console.log(param);
+// });
+// socket.on("chat message", function (sender) {
+//   // let { id } = sender;
+
+//   // if (id != localStorage.getItem("id")) {
+//   //   setSelectedUserChat(id);
+//   // }
+// });
+
+export default {
+  data() {
+    return {
+      pesan: "",
+      image: "",
+      chat: [],
+    };
+  },
+  computed: {
+    ...mapState(useChating, ["selectedUserChat"]),
+    ...mapWritableState(useChating, ["socketState"]),
+  },
+  methods: {
+    ...mapActions(useChating, [
+      "sendMessage",
+      "setSelectedUserChat",
+      "addChat",
+      "testingSomething",
+    ]),
+    setImage(e) {
+      this.image = e.target.files[0];
+    },
+    handleSendMessage() {
+      this.sendMessage(this.pesan);
+      socket.emit("chat message", {
+        idsend: localStorage.getItem("id"),
+        idreceive: this.selectedUserChat.member[0]._id,
+        message: this.pesan,
+      });
+      this.pesan = "";
+    },
+  },
+  mounted() {
+    // declare first from pinia
+    const setSelectedUserChat = this.setSelectedUserChat;
+
+    socket.on("connect", () => {
+      // console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+    });
+    socket.on("message", (param) => {
+      // console.log(param);
+    });
+    socket.on("chat message", async function (sender) {
+      console.log("sender is", sender);
+      let { idsend, idreceive, message } = sender;
+
+      if (idreceive == localStorage.getItem("id")) {
+        setSelectedUserChat(idsend);
+      } else {
+        console.log("ok");
+      }
+    });
+  },
+};
+</script>

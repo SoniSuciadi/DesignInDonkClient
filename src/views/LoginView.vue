@@ -5,8 +5,7 @@
         <a class="flex flex-row justify-center">
           <img
             src="../assets/logo.jpg"
-            width="9%"
-            class="rounded-full mt-15 animate__animated animate__backInUp"
+            class="rounded-full mt-15 animate__animated animate__backInUp w-36"
           />
         </a>
       </div>
