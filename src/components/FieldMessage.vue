@@ -11,11 +11,12 @@
           class="fa-solid fa-image text-slate-100 group-hover:text-slate-900"
         ></i>
       </div>
-      <input id="dropzone-file" type="file" class="hidden" />
+      <input id="dropzone-file" type="file" class="hidden" @change="setImage" />
     </label>
 
     <textarea
       v-model="pesan"
+      :disabled="image"
       id="chat"
       rows="1"
       class="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -34,25 +35,12 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapWritableState } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { useChating } from "../stores/chating";
 import { io } from "socket.io-client";
 const socket = io("http://localhost:3000", {
   transports: ["websocket"],
 });
-// socket.on("connect", () => {
-//   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
-// });
-// socket.on("message", (param) => {
-//   console.log(param);
-// });
-// socket.on("chat message", function (sender) {
-//   // let { id } = sender;
-
-//   // if (id != localStorage.getItem("id")) {
-//   //   setSelectedUserChat(id);
-//   // }
-// });
 
 export default {
   data() {
@@ -64,20 +52,15 @@ export default {
   },
   computed: {
     ...mapState(useChating, ["selectedUserChat"]),
-    ...mapWritableState(useChating, ["socketState"]),
   },
   methods: {
-    ...mapActions(useChating, [
-      "sendMessage",
-      "setSelectedUserChat",
-      "addChat",
-      "testingSomething",
-    ]),
+    ...mapActions(useChating, ["sendMessage", "setSelectedUserChat"]),
     setImage(e) {
       this.image = e.target.files[0];
+      this.pesan = e.target.files[0].name;
     },
-    handleSendMessage() {
-      this.sendMessage(this.pesan);
+    async handleSendMessage() {
+      await this.sendMessage({ pesan: this.pesan, image: this.image });
       socket.emit("chat message", {
         idsend: localStorage.getItem("id"),
         idreceive: this.selectedUserChat.member[0]._id,
@@ -93,11 +76,8 @@ export default {
     socket.on("connect", () => {
       // console.log(socket.id); // x8WIv7-mJelg7on_ALbx
     });
-    socket.on("message", (param) => {
-      // console.log(param);
-    });
-    socket.on("chat message", async function (sender) {
-      console.log("sender is", sender);
+
+    socket.on("chat message", function (sender) {
       let { idsend, idreceive, message } = sender;
 
       if (idreceive == localStorage.getItem("id")) {

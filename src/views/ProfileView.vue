@@ -30,7 +30,7 @@
 
   <ModalPost />
   <!-- modal profile -->
-  <ModalProfile />
+  <ModalProfile :userData="userData" />
 </template>
 <script>
 import ModalPost from "../components/ModalPost.vue";

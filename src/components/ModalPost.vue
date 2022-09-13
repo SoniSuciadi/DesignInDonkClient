@@ -77,7 +77,7 @@
               type="submit"
               @click.prevent="handleUpload()"
               class="bg-slate-800 mt-5 hover:bg-slate-700 text-slate-100 p-3 rounded-lg font-semibold cursor-pointer"
-              data-bs-dismiss="modal" 
+              data-bs-dismiss="modal"
             >
               Post !!!
             </button>
@@ -91,6 +91,7 @@
 import { mapActions, mapState } from "pinia";
 import { usePostStore } from "../stores/post";
 import { useCategoryStore } from "../stores/category";
+import { useUserStore } from "../stores/user";
 import Swal from "sweetalert2";
 export default {
   data() {
@@ -116,6 +117,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(useUserStore, ["getUserData"]),
     ...mapActions(useCategoryStore, ["getCategory"]),
     ...mapActions(usePostStore, ["addPosting"]),
     setImage(e) {
@@ -134,7 +136,7 @@ export default {
           color: "#0f182c",
           confirmButtonColor: "#0f182c",
         });
-        console.log(a);
+        this.getUserData(localStorage.getItem("id"));
       } catch (error) {
         console.log(error);
         Swal.fire({

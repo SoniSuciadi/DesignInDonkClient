@@ -3,7 +3,7 @@
   <div class="grid flex mt-10 md:mx-8 grid-cols-12">
     <ListPerson :allChatUser="allChatUser" />
 
-    <div class="inline border col-span-9">
+    <div class="inline border col-span-9" v-if="selectedUserChat">
       <div class="h-12 bg-slate-900 flex">
         <p class="flex my-auto text-slate-200 font-bold ml-4">
           {{ getname }}
@@ -19,6 +19,7 @@
           :messages="messages"
         />
       </div>
+
       <div class="bg-slate-100-0 p-1">
         <FieldMessage />
       </div>

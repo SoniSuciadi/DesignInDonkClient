@@ -69,6 +69,7 @@
 </template>
 <script>
 import { mapActions, mapState } from "pinia";
+import Swal from "sweetalert2";
 import { useUserStore } from "../stores/user";
 export default {
   data() {
@@ -81,19 +82,37 @@ export default {
       },
     };
   },
+
   computed: {
-    ...mapState(useUserStore, ["userData"]),
+    // ...mapState(useUserStore, ["userData"]),
   },
+  props: ["userData"],
   methods: {
     ...mapActions(useUserStore, ["updateUserData"]),
     async handleUpdateUser() {
-      await this.updateUserData(this.user);
+      try {
+        Swal.fire({
+          icon: "success",
+          title: "Success Update Data",
+          text: "Please Login Again",
+          iconColor: "#0f182c",
+          background: "#e2e8f0",
+          backdrop: "swal2-backdrop-show",
+          color: "#0f182c",
+          confirmButtonColor: "#0f182c",
+        });
+        await this.updateUserData(this.user);
+        localStorage.clear();
+        this.$router.push("/login");
+      } catch (error) {
+        console.log(error);
+      }
     },
     setImage(e) {
       this.user.image = e.target.files[0];
     },
   },
-  created() {
+  mounted() {
     this.user.fullName = this.userData.fullName;
     this.user.email = this.userData.email;
     this.user.phoneNumber = this.userData.phoneNumber;
