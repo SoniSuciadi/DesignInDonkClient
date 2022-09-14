@@ -16,6 +16,7 @@
     :posts="postTemplate"
   />
   <FooterBar />
+  <LoadingAnimate v-if="loading" />
 </template>
 <script>
 import NavBar from "../components/NavBar.vue";
@@ -24,6 +25,8 @@ import RightCarosel from "../components/RightCarosel.vue";
 import FooterBar from "../components/FooterBar.vue";
 import { usePostStore } from "../stores/post";
 import { mapActions, mapState } from "pinia";
+import { useLoadingStore } from "../stores/loading";
+import LoadingAnimate from "../components/LoadingAnimate.vue";
 export default {
   data() {
     return {
@@ -32,8 +35,10 @@ export default {
       // postTemplate: [],
     };
   },
-  components: { NavBar, LeftCarosel, RightCarosel, FooterBar },
+  components: { NavBar, LeftCarosel, RightCarosel, FooterBar, LoadingAnimate },
   computed: {
+    ...mapState(useLoadingStore, ["loading"]),
+
     ...mapState(usePostStore, [
       "postBackgroud",
       "postPNGImages",
@@ -41,6 +46,8 @@ export default {
     ]),
   },
   methods: {
+    ...mapActions(useLoadingStore, ["setLoading"]),
+
     ...mapActions(usePostStore, [
       "readPostHome",
       "postCount",
@@ -50,6 +57,7 @@ export default {
     ]),
   },
   async created() {
+    this.setLoading(true);
     try {
       let PNGImages = await this.readPostHome("PNG Images");
       let Background = await this.readPostHome("Background");
@@ -60,6 +68,7 @@ export default {
     } catch (error) {
       console.log(error);
     }
+    this.setLoading(false);
   },
 };
 </script>

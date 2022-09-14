@@ -7,6 +7,8 @@ import ChatView from "../views/ChatView.vue";
 import ChangePasswordView from "../views/ChangePasswordView.vue";
 import ProfileView from "../views/ProfileView.vue";
 import DetailPostView from "../views/DetailPostView.vue";
+import ConfirmPage from "../views/ConfirmPage.vue";
+import NotFound from "../views/NotFound.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -71,7 +73,25 @@ const router = createRouter({
       name: "post",
       component: DetailPostView,
     },
+    {
+      path: "/confirm",
+      name: "confirm",
+      component: ConfirmPage,
+    },
+    { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
   ],
+});
+router.beforeEach((to, from) => {
+  // console.log(to.name, "dari router <<");
+  if (!localStorage.getItem("access_token") && to.name == "message") {
+    return { name: "login" };
+  }
+  if (
+    localStorage.getItem("access_token") &&
+    (to.name == "login" || to.name == "register")
+  ) {
+    return { name: "home" };
+  }
 });
 
 export default router;

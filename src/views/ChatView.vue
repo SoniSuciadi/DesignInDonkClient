@@ -25,20 +25,26 @@
       </div>
     </div>
   </div>
+  <LoadingAnimate v-if="loading" />
 </template>
 <script>
 import NavBar from "../components/NavBar.vue";
 import ListPerson from "../components/ListPerson.vue";
 import FieldMessage from "../components/FieldMessage.vue";
 import { mapActions, mapState } from "pinia";
+import { useLoadingStore } from "../stores/loading";
+
 import { useChating } from "../stores/chating";
 import ChatBox from "../components/ChatBox.vue";
+import LoadingAnimate from "../components/LoadingAnimate.vue";
 export default {
-  components: { NavBar, ListPerson, FieldMessage, ChatBox },
+  components: { NavBar, ListPerson, FieldMessage, ChatBox, LoadingAnimate },
   methods: {
     ...mapActions(useChating, ["getAllUserChat"]),
+    ...mapActions(useLoadingStore, ["setLoading"]),
   },
   computed: {
+    ...mapState(useLoadingStore, ["loading"]),
     ...mapState(useChating, ["allChatUser", "selectedUserChat"]),
     getname() {
       if (!this.selectedUserChat) {
@@ -49,7 +55,9 @@ export default {
     },
   },
   created() {
+    this.setLoading(true);
     this.getAllUserChat();
+    this.setLoading(false);
   },
 };
 </script>

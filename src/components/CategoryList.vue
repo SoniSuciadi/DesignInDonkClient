@@ -24,18 +24,24 @@
 import { mapActions, mapState } from "pinia";
 import { useCategoryStore } from "../stores/category";
 import { usePostStore } from "../stores/post";
+import { useLoadingStore } from "../stores/loading";
 export default {
   props: ["subCategory"],
   computed: {
     ...mapState(useCategoryStore, ["selectedSubCate"]),
+    ...mapState(useLoadingStore, ["loading"]),
   },
   methods: {
     ...mapActions(useCategoryStore, ["setSelectedSubCate"]),
+    ...mapActions(useLoadingStore, ["setLoading"]),
+
     ...mapActions(usePostStore, ["setSubCategory", "setskip"]),
     handleSelectSubCate(subCate) {
+      this.setSelectedSubCate(true);
       this.setSubCategory(subCate == "all" ? "" : subCate);
       this.setskip(0);
       this.setSelectedSubCate(subCate);
+      this.setSelectedSubCate(false);
     },
   },
 };

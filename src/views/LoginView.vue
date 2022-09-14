@@ -89,13 +89,12 @@
           <div class="mt-7 text-center text-slate-400 text-xs">
             <span>
               Copyright © 2022
-              <a
-                href="https://codepen.io/uidesignhub"
-                rel=""
+              <router-link
+                to="/"
                 target="_blank"
                 title="Codepen aji"
                 class="text-violet-500 hover:text-violet-600"
-                >DESIGN IN DONK</a
+                >DESIGN IN DONK</router-link
               ></span
             >
           </div>
@@ -104,12 +103,15 @@
     </div>
   </div>
   <ModalChangePassword />
+  <LoadingAnimate v-if="loading" />
 </template>
 <script>
 import { mapActions, mapState } from "pinia";
 import Swal from "sweetalert2";
 import { useUserStore } from "../stores/user";
+import { useLoadingStore } from "../stores/loading";
 import ModalChangePassword from "../components/ModalChangePassword.vue";
+import LoadingAnimate from "../components/LoadingAnimate.vue";
 export default {
   data() {
     return {
@@ -120,9 +122,14 @@ export default {
       email: "",
     };
   },
+  computed: {
+    ...mapState(useLoadingStore, ["loading"]),
+  },
   methods: {
+    ...mapActions(useLoadingStore, ["setLoading"]),
     ...mapActions(useUserStore, ["login", "forgotPassword", "loginGoogle"]),
     handleGoogleLogin(google_token) {
+      this.setLoading(true);
       this.loginGoogle(google_token.credential)
         .then((res) => {
           Swal.fire({
@@ -144,9 +151,14 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+        })
+        .finally(() => {
+          this.setLoading(false);
         });
     },
     handleLogin() {
+      this.setLoading(true);
+
       this.login(this.user)
         .then((res) => {
           localStorage.setItem("access_token", res.data.access_token);
@@ -168,13 +180,17 @@ export default {
         .catch((err) => {
           Swal.fire({
             icon: "error",
-            title: "Invalid email or password",
+            title: "Fail",
+            text: `${err.response.data.msg}`,
             iconColor: "#0f182c",
             background: "#e2e8f0",
             backdrop: "swal2-backdrop-show",
             color: "#0f182c",
             confirmButtonColor: "#0f182c",
           });
+        })
+        .finally(() => {
+          this.setLoading(false);
         });
     },
   },
@@ -193,6 +209,6 @@ export default {
       google.accounts.id.prompt(); // also display the One Tap dialog
     };
   },
-  components: { ModalChangePassword },
+  components: { ModalChangePassword, LoadingAnimate },
 };
 </script>

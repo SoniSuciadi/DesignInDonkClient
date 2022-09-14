@@ -16,7 +16,7 @@
 
     <textarea
       v-model="pesan"
-      :disabled="image"
+      :disabled="image != ''"
       id="chat"
       rows="1"
       class="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -38,7 +38,8 @@
 import { mapActions, mapState } from "pinia";
 import { useChating } from "../stores/chating";
 import { io } from "socket.io-client";
-const socket = io("http://localhost:3000", {
+const socket = io("https://designindonk.herokuapp.com", {
+  // deploy
   transports: ["websocket"],
 });
 
@@ -67,6 +68,7 @@ export default {
         message: this.pesan,
       });
       this.pesan = "";
+      this.image = "";
     },
   },
   mounted() {

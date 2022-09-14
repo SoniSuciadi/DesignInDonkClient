@@ -21,6 +21,9 @@ export const useUserStore = defineStore("user", {
         password,
       });
     },
+    activationAccount(token) {
+      return api.get("/user/confirm?token=" + token);
+    },
     register(user) {
       let { fullName, email, password } = user;
       return api.post("/user/register", {

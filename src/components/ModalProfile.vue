@@ -66,11 +66,15 @@
       </div>
     </div>
   </div>
+  <LoadingAnimate v-if="loading" />
 </template>
 <script>
 import { mapActions, mapState } from "pinia";
+import { useLoadingStore } from "../stores/loading";
+
 import Swal from "sweetalert2";
 import { useUserStore } from "../stores/user";
+import LoadingAnimate from "./LoadingAnimate.vue";
 export default {
   data() {
     return {
@@ -82,15 +86,18 @@ export default {
       },
     };
   },
-
   computed: {
+    ...mapState(useLoadingStore, ["loading"]),
     // ...mapState(useUserStore, ["userData"]),
   },
   props: ["userData"],
   methods: {
+    ...mapActions(useLoadingStore, ["setLoading"]),
     ...mapActions(useUserStore, ["updateUserData"]),
     async handleUpdateUser() {
+      this.setLoading(true);
       try {
+        await this.updateUserData(this.user);
         Swal.fire({
           icon: "success",
           title: "Success Update Data",
@@ -101,12 +108,21 @@ export default {
           color: "#0f182c",
           confirmButtonColor: "#0f182c",
         });
-        await this.updateUserData(this.user);
         localStorage.clear();
         this.$router.push("/login");
       } catch (error) {
-        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Fail Update Data",
+          text: "make sure the form is filled out correctly",
+          iconColor: "#0f182c",
+          background: "#e2e8f0",
+          backdrop: "swal2-backdrop-show",
+          color: "#0f182c",
+          confirmButtonColor: "#0f182c",
+        });
       }
+      this.setLoading(false);
     },
     setImage(e) {
       this.user.image = e.target.files[0];
@@ -117,5 +133,6 @@ export default {
     this.user.email = this.userData.email;
     this.user.phoneNumber = this.userData.phoneNumber;
   },
+  components: { LoadingAnimate },
 };
 </script>

@@ -19,7 +19,7 @@
       </div>
     </div>
   </div>
-
+  <LoadingAnimate v-if="loading" />
   <FooterBar class="fixed inset-x-0 bottom-0" />
 </template>
 <script>
@@ -28,20 +28,33 @@ import CategoryList from "../components/CategoryList.vue";
 import CardPosting from "../components/CardPosting.vue";
 import FooterBar from "../components/FooterBar.vue";
 import { mapActions, mapState } from "pinia";
+import { useLoadingStore } from "../stores/loading";
 import { useCategoryStore } from "../stores/category";
 import { usePostStore } from "../stores/post";
 import PaginationPost from "../components/PaginationPost.vue";
+import LoadingAnimate from "../components/LoadingAnimate.vue";
 export default {
   computed: {
+    ...mapState(useLoadingStore, ["loading"]),
     ...mapState(usePostStore, ["page", "showPostSelect"]),
     ...mapState(useCategoryStore, ["category"]),
   },
   methods: {
+    ...mapActions(useLoadingStore, ["setLoading"]),
+
     ...mapActions(useCategoryStore, ["getCategory"]),
     ...mapActions(usePostStore, ["setpage", "readPost", "setshowPostSelect"]),
   },
-  components: { NavBar, CategoryList, CardPosting, FooterBar, PaginationPost },
+  components: {
+    NavBar,
+    CategoryList,
+    CardPosting,
+    FooterBar,
+    PaginationPost,
+    LoadingAnimate,
+  },
   async created() {
+    this.setLoading(true);
     switch (this.$route.path) {
       case "/pngimages":
         this.getCategory("PNG Images");
@@ -56,6 +69,7 @@ export default {
         this.setpage("Template");
         break;
     }
+    this.setLoading(false);
   },
 };
 </script>

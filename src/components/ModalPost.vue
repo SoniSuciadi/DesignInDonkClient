@@ -86,13 +86,16 @@
       </div>
     </div>
   </div>
+  <LoadingAnimate v-if="loading" />
 </template>
 <script>
 import { mapActions, mapState } from "pinia";
 import { usePostStore } from "../stores/post";
 import { useCategoryStore } from "../stores/category";
 import { useUserStore } from "../stores/user";
+import { useLoadingStore } from "../stores/loading";
 import Swal from "sweetalert2";
+import LoadingAnimate from "./LoadingAnimate.vue";
 export default {
   data() {
     return {
@@ -106,8 +109,8 @@ export default {
     };
   },
   computed: {
+    ...mapState(useLoadingStore, ["loading"]),
     ...mapState(useCategoryStore, ["category"]),
-
     getSubcategory() {
       if (this.category.length) {
         return this.category[0].subCategory;
@@ -117,6 +120,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(useLoadingStore, ["setLoading"]),
     ...mapActions(useUserStore, ["getUserData"]),
     ...mapActions(useCategoryStore, ["getCategory"]),
     ...mapActions(usePostStore, ["addPosting"]),
@@ -125,7 +129,8 @@ export default {
     },
     async handleUpload() {
       try {
-        let a = await this.addPosting(this.post);
+        this.setLoading(true);
+        await this.addPosting(this.post);
         Swal.fire({
           icon: "success",
           title: "Success added your posting",
@@ -137,6 +142,11 @@ export default {
           confirmButtonColor: "#0f182c",
         });
         this.getUserData(localStorage.getItem("id"));
+        this.post.title = "";
+        this.post.description = "";
+        this.post.image = "";
+        this.post.subCategory = "";
+        this.post.category = "";
       } catch (error) {
         console.log(error);
         Swal.fire({
@@ -151,6 +161,7 @@ export default {
         });
         console.log(error);
       }
+      this.setLoading(false);
     },
     setSubcategory() {
       this.getCategory(this.post.category);
@@ -159,5 +170,6 @@ export default {
   created() {
     this.getCategory("PNG Images");
   },
+  components: { LoadingAnimate },
 };
 </script>

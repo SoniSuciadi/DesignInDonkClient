@@ -6,22 +6,31 @@
     </div>
     <InformationPost :detailPost="detailPost" />
   </div>
+  <LoadingAnimate v-if="loading" />
 </template>
 <script>
 import NavBar from "../components/NavBar.vue";
 import InformationPost from "../components/InformationPost.vue";
 import { mapActions, mapState } from "pinia";
 import { usePostStore } from "../stores/post";
+import { useLoadingStore } from "../stores/loading";
+import LoadingAnimate from "../components/LoadingAnimate.vue";
+
 export default {
-  components: { NavBar, InformationPost },
+  components: { NavBar, InformationPost, LoadingAnimate },
   methods: {
+    ...mapActions(useLoadingStore, ["setLoading"]),
+
     ...mapActions(usePostStore, ["getPostDetail"]),
   },
   computed: {
+    ...mapState(useLoadingStore, ["loading"]),
     ...mapState(usePostStore, ["detailPost"]),
   },
   created() {
+    this.setLoading(true);
     this.getPostDetail(this.$route.params.id);
+    this.setLoading(false);
   },
 };
 </script>

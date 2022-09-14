@@ -54,5 +54,17 @@ export const useChating = defineStore("chating", {
         console.log(error);
       }
     },
+    manipulateSelectedUser(params) {
+      let { _id, fullName, imgUrl } = params;
+      this.selectedUserChat = {
+        member: [
+          {
+            _id,
+            fullName,
+            imgUrl,
+          },
+        ],
+      };
+    },
   },
 });

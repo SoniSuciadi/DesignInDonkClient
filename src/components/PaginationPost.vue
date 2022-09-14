@@ -40,14 +40,17 @@
 <script>
 import { mapActions, mapState } from "pinia";
 import { usePostStore } from "../stores/post";
+import { useLoadingStore } from "../stores/loading";
 export default {
   computed: {
     ...mapState(usePostStore, ["count", "skip"]),
+    ...mapState(useLoadingStore, ["loading"]),
     totalPage() {
       return Math.ceil(this.count / 8);
     },
   },
   methods: {
+    ...mapActions(useLoadingStore, ["setLoading"]),
     ...mapActions(usePostStore, ["setskip"]),
   },
 };

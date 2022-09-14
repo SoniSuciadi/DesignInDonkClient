@@ -124,6 +124,7 @@ import { useUserStore } from "../stores/user";
 import { mapActions, mapState } from "pinia";
 import { usePostStore } from "../stores/post";
 import { useCategoryStore } from "../stores/category";
+import { useLoadingStore } from "../stores/loading";
 
 export default {
   data() {
@@ -133,10 +134,12 @@ export default {
     };
   },
   computed: {
+    ...mapState(useLoadingStore, ["loading"]),
     ...mapState(useUserStore, ["name", "imgUrl"]),
     ...mapState(usePostStore, ["page"]),
   },
   methods: {
+    ...mapActions(useLoadingStore, ["setLoading"]),
     showNavCategory() {
       if (
         this.$route.path !== "/message" &&
@@ -195,6 +198,7 @@ export default {
     },
     ...mapActions(useCategoryStore, ["getCategory", "setSelectedSubCate"]),
     async changePage(page) {
+      this.setLoading(true);
       switch (page) {
         case "pngimages":
           this.setSelectedSubCate("all");
@@ -215,6 +219,7 @@ export default {
           this.setskip(0);
           break;
       }
+      this.setLoading(false);
     },
 
     ...mapActions(useUserStore, ["setname", "setimgUrl"]),

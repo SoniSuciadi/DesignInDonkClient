@@ -1,21 +1,18 @@
 <template>
-  <div v-if="showDate">
+  <div v-if="showDate" class="my-2">
     <hr />
     <p class="text-center text-sm text-slate-400">
       {{ getDay }}
     </p>
   </div>
-  <div class="flex mt-2" v-if="messages.sender !== 'anda'">
-    <div class="my-auto">
-      <p class="mx-2 px-2">
+  <div class="flex mt-4" v-if="messages.sender !== 'anda'">
+    <div class="my-auto flex">
+      <p class="mx-2 px-2 flex">
         {{ messages.message }}
       </p>
-      <div class="flex">
-        <img :src="messages.imgUrl" class="flex w-48" />
-      </div>
     </div>
-
-    <p class="flex justify-center my-auto font-light text-sm text-slate-500">
+    <img :src="messages.imgUrl" class="flex w-48" v-if="messages.imgUrl" />
+    <p class="flex my-auto font-light text-sm text-slate-500">
       {{ getHours }}
     </p>
   </div>
@@ -29,7 +26,7 @@
         {{ messages.message }}
       </p>
       <div class="flex justify-end mx-3">
-        <img :src="messages.imgUrl" style="width: 30%" />
+        <img :src="messages.imgUrl" class="flex w-48" v-if="messages.imgUrl" />
       </div>
     </div>
     <p class="my-auto bg-slate-800 text-slate-100 px-2 py-1 rounded-full">

@@ -61,10 +61,17 @@
                 class="rounded-full w-10 my-auto"
                 :src="detailPost.ImguserCreate"
               />
-              <p class="hidden md:flex font-bold my-auto ml-2 font-sans">
+              <p class="flex font-bold my-auto ml-2 font-sans">
                 {{ detailPost.fullNameuserCreate }}
               </p></a
             >
+            <button
+              v-if="detailPost.IduserCreate != id"
+              @click.prevent="handleKirimPesan"
+              class="flex justify-end bg-slate-800 hover:bg-slate-700 mx-auto my-auto text-slate-300 py-1 px-3 rounded-lg font-semibold cursor-pointer"
+            >
+              Kirim Pesan
+            </button>
           </div>
         </div>
       </li>
@@ -72,11 +79,29 @@
   </div>
 </template>
 <script>
+import { mapActions, mapState } from "pinia";
+import { useChating } from "../stores/chating";
 export default {
   data() {
-    return {};
+    return {
+      id: "",
+    };
   },
   computed: {},
   props: ["detailPost"],
+  created() {
+    this.id = localStorage.getItem("id");
+  },
+  methods: {
+    ...mapActions(useChating, ["manipulateSelectedUser"]),
+    handleKirimPesan() {
+      this.manipulateSelectedUser({
+        _id: this.detailPost.IduserCreate,
+        fullName: this.detailPost.fullNameuserCreate,
+        imgUrl: this.detailPost.imgUrl,
+      });
+      this.$router.push("/message");
+    },
+  },
 };
 </script>
