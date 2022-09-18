@@ -9,7 +9,7 @@
           {{ getname }}
         </p>
       </div>
-      <div
+      <div 
         class="col-row-10 overflow-y-auto bg-slate-100 p-3"
         style="height: 38rem"
       >

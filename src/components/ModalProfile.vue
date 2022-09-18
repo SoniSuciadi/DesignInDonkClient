@@ -128,10 +128,10 @@ export default {
       this.user.image = e.target.files[0];
     },
   },
-  mounted() {
-    this.user.fullName = this.userData.fullName;
-    this.user.email = this.userData.email;
-    this.user.phoneNumber = this.userData.phoneNumber;
+  async mounted() {
+    this.user.fullName = await this.userData.fullName;
+    this.user.email = await this.userData.email;
+    this.user.phoneNumber = await this.userData.phoneNumber;
   },
   components: { LoadingAnimate },
 };

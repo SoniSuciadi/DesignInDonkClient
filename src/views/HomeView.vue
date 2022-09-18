@@ -16,7 +16,6 @@
     :posts="postTemplate"
   />
   <FooterBar />
-  <LoadingAnimate v-if="loading" />
 </template>
 <script>
 import NavBar from "../components/NavBar.vue";

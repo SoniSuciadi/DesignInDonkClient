@@ -6,6 +6,19 @@
       <CategoryList :subCategory="category[0].subCategory" />
       <div class="col-span-3">
         <div
+          v-if="loading"
+          class="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 gap-4 mx-10 sm:mx-5"
+        >
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
+        <div
           class="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 gap-4 mx-10 sm:mx-5"
         >
           <CardPosting
@@ -33,7 +46,13 @@ import { useCategoryStore } from "../stores/category";
 import { usePostStore } from "../stores/post";
 import PaginationPost from "../components/PaginationPost.vue";
 import LoadingAnimate from "../components/LoadingAnimate.vue";
+import SkeletonCard from "../components/SkeletonCard.vue";
 export default {
+  data() {
+    return {
+      loading: true,
+    };
+  },
   computed: {
     ...mapState(useLoadingStore, ["loading"]),
     ...mapState(usePostStore, ["page", "showPostSelect"]),
@@ -41,7 +60,6 @@ export default {
   },
   methods: {
     ...mapActions(useLoadingStore, ["setLoading"]),
-
     ...mapActions(useCategoryStore, ["getCategory"]),
     ...mapActions(usePostStore, ["setpage", "readPost", "setshowPostSelect"]),
   },
@@ -52,24 +70,25 @@ export default {
     FooterBar,
     PaginationPost,
     LoadingAnimate,
+    SkeletonCard,
   },
   async created() {
-    this.setLoading(true);
+    this.loading = true;
     switch (this.$route.path) {
       case "/pngimages":
-        this.getCategory("PNG Images");
-        this.setpage("PNG Images");
+        await this.getCategory("PNG Images");
+        await this.setpage("PNG Images");
         break;
       case "/background":
-        this.getCategory("Background");
-        this.setpage("Background");
+        await this.getCategory("Background");
+        await this.setpage("Background");
         break;
       case "/template":
-        this.getCategory("Template");
-        this.setpage("Template");
+        await this.getCategory("Template");
+        await this.setpage("Template");
         break;
     }
-    this.setLoading(false);
+    this.loading = false;
   },
 };
 </script>
