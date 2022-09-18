@@ -45,6 +45,12 @@
               class="fa-solid fa-envelope fa-xl group-hover:text-slate-900"
             ></i>
           </router-link>
+          <!-- <router-link
+            to="/"
+            class="group my-auto p-1 hover:bg-slate-200 rounded-full"
+          >
+            <i class="fa-solid fa-heart fa-xl group-hover:text-slate-900"></i>
+          </router-link> -->
           <a
             href=""
             class="flex justify-end mr"
